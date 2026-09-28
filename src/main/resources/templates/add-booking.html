@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>RoomBook - New Booking</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 25px 40px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+        }
+
+        .header p {
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 700px;
+            max-width: 95%;
+            margin: 35px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: #1e3a8a;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .time-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .time-row .form-group {
+            flex: 1;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button,
+        .btn {
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .submit-btn {
+            background: #2563eb;
+            color: white;
+            flex: 1;
+        }
+
+        .back-btn {
+            background: #64748b;
+            color: white;
+        }
+
+        button:hover,
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .loading {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+
+            .time-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="header">
+
+    <h1>RoomBook</h1>
+
+    <p>Meeting Room Booking System</p>
+
+</div>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Book a Meeting Room</h2>
+
+
+        <div id="successMessage"
+             class="message success">
+        </div>
+
+
+        <div id="errorMessage"
+             class="message error">
+        </div>
+
+
+        <form id="bookingForm">
+
+
+            <!-- ROOM -->
+
+            <div class="form-group">
+
+                <label for="room">
+                    Meeting Room
+                </label>
+
+                <select id="room"
+                        required>
+
+                    <option value="">
+                        Select a room
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- EMPLOYEE -->
+
+            <div class="form-group">
+
+                <label for="employee">
+                    Organizer / Employee
+                </label>
+
+                <select id="employee"
+                        required>
+
+                    <option value="">
+                        Select an employee
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="form-group">
+
+                <label for="bookingDate">
+                    Booking Date
+                </label>
+
+                <input
+                        type="date"
+                        id="bookingDate"
+                        required>
+
+            </div>
+
+
+            <!-- TIME -->
+
+            <div class="time-row">
+
+                <div class="form-group">
+
+                    <label for="startTime">
+                        Start Time
+                    </label>
+
+                    <input
+                            type="time"
+                            id="startTime"
+                            required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="endTime">
+                        End Time
+                    </label>
+
+                    <input
+                            type="time"
+                            id="endTime"
+                            required>
+
+                </div>
+
+            </div>
+
+
+            <!-- PURPOSE -->
+
+            <div class="form-group">
+
+                <label for="purpose">
+                    Purpose
+                </label>
+
+                <textarea
+                        id="purpose"
+                        placeholder="Enter the purpose of the meeting"
+                        required></textarea>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="buttons">
+
+                <button
+                        type="submit"
+                        class="submit-btn">
+
+                    Book Room
+
+                </button>
+
+
+                <a
+                        href="/bookings"
+                        class="btn back-btn">
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    // Load rooms
+
+    async function loadRooms() {
+
+        try {
+
+            const response =
+                await fetch("/api/rooms");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load rooms"
+                );
+
+            }
+
+
+            const rooms =
+                await response.json();
+
+
+            const roomSelect =
+                document.getElementById("room");
+
+
+            rooms.forEach(room => {
+
+                if (room.status &&
+                    room.status.toUpperCase() !== "AVAILABLE") {
+
+                    return;
+
+                }
+
+
+                const option =
+                    document.createElement("option");
+
+
+                option.value = room.id;
+
+
+                option.textContent =
+                    room.roomName +
+                    " - Capacity: " +
+                    room.capacity +
+                    " - " +
+                    room.location;
+
+
+                roomSelect.appendChild(option);
+
+            });
+
+        }
+
+        catch (error) {
+
+            showError(
+                "Unable to load meeting rooms."
+            );
+
+        }
+
+    }
+
+
+
+    // Load employees
+
+    async function loadEmployees() {
+
+        try {
+
+            const response =
+                await fetch("/api/employees");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load employees"
+                );
+
+            }
+
+
+            const employees =
+                await response.json();
+
+
+            const employeeSelect =
+                document.getElementById("employee");
+
+
+            employees.forEach(employee => {
+
+                const option =
+                    document.createElement("option");
+
+
+                option.value = employee.id;
+
+
+                option.textContent =
+                    employee.name +
+                    " - " +
+                    employee.department;
+
+
+                employeeSelect.appendChild(option);
+
+            });
+
+        }
+
+        catch (error) {
+
+            showError(
+                "Unable to load employees."
+            );
+
+        }
+
+    }
+
+
+
+    // Form submission
+
+    document.getElementById(
+        "bookingForm"
+    ).addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            hideMessages();
+
+
+            const roomId =
+                document.getElementById(
+                    "room"
+                ).value;
+
+
+            const employeeId =
+                document.getElementById(
+                    "employee"
+                ).value;
+
+
+            const bookingDate =
+                document.getElementById(
+                    "bookingDate"
+                ).value;
+
+
+            const startTime =
+                document.getElementById(
+                    "startTime"
+                ).value;
+
+
+            const endTime =
+                document.getElementById(
+                    "endTime"
+                ).value;
+
+
+            const purpose =
+                document.getElementById(
+                    "purpose"
+                ).value.trim();
+
+
+
+            // Validate time
+
+            if (startTime >= endTime) {
+
+                showError(
+                    "End time must be after start time."
+                );
+
+                return;
+
+            }
+
+
+
+            // Validate date
+
+            const today =
+                new Date()
+                    .toISOString()
+                    .split("T")[0];
+
+
+            if (bookingDate < today) {
+
+                showError(
+                    "Booking date cannot be in the past."
+                );
+
+                return;
+
+            }
+
+
+
+            const bookingData = {
+
+                room: {
+                    id: Number(roomId)
+                },
+
+                employee: {
+                    id: Number(employeeId)
+                },
+
+                bookingDate: bookingDate,
+
+                startTime: startTime,
+
+                endTime: endTime,
+
+                purpose: purpose
+
+            };
+
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/bookings",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    bookingData
+                                )
+                        }
+                    );
+
+
+
+                const result =
+                    await response.json();
+
+
+
+                if (!response.ok) {
+
+                    showError(
+                        result.message ||
+                        "Booking failed."
+                    );
+
+                    return;
+
+                }
+
+
+
+                showSuccess(
+                    "Room booked successfully!"
+                );
+
+
+
+                setTimeout(
+                    function() {
+
+                        window.location.href =
+                            "/bookings";
+
+                    },
+                    1000
+                );
+
+            }
+
+            catch (error) {
+
+                showError(
+                    "Something went wrong while creating the booking."
+                );
+
+            }
+
+        }
+    );
+
+
+
+    function showError(message) {
+
+        const error =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        error.innerText = message;
+
+        error.style.display = "block";
+
+    }
+
+
+
+    function showSuccess(message) {
+
+        const success =
+            document.getElementById(
+                "successMessage"
+            );
+
+        success.innerText = message;
+
+        success.style.display = "block";
+
+    }
+
+
+
+    function hideMessages() {
+
+        document.getElementById(
+            "errorMessage"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "successMessage"
+        ).style.display = "none";
+
+    }
+
+
+
+    // Set today's date as minimum date
+
+    document.getElementById(
+        "bookingDate"
+    ).min =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+
+    // Load data
+
+    loadRooms();
+
+    loadEmployees();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>RoomBook - Dashboard</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, #eef4ff, #f8fafc);
+            color: #172033;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            min-height: 82px;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background:
+                linear-gradient(135deg, #172554, #2563eb);
+
+            color: white;
+
+            box-shadow:
+                0 8px 25px rgba(30, 64, 175, 0.20);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255,255,255,0.18);
+            font-size: 24px;
+        }
+
+        .brand h1 {
+            font-size: 25px;
+            letter-spacing: 0.3px;
+        }
+
+        .brand p {
+            font-size: 12px;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+
+        .logout-btn {
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.12);
+            color: white;
+
+            padding: 10px 18px;
+            border-radius: 9px;
+
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: 0.25s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: 42px auto;
+        }
+
+
+        /* ================= WELCOME ================= */
+
+        .welcome-card {
+            background: white;
+
+            border-radius: 20px;
+            padding: 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow:
+                0 8px 30px rgba(15, 23, 42, 0.07);
+
+            border: 1px solid #e5e7eb;
+
+            margin-bottom: 35px;
+        }
+
+        .welcome-text h2 {
+            font-size: 28px;
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            margin-top: 15px;
+
+            padding: 7px 14px;
+
+            border-radius: 20px;
+
+            background: #eff6ff;
+            color: #1d4ed8;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            border: 1px solid #dbeafe;
+        }
+
+        .welcome-icon {
+            width: 90px;
+            height: 90px;
+
+            border-radius: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 43px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dbeafe,
+                    #eff6ff
+                );
+        }
+
+
+        /* ================= SECTION ================= */
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .section-header h3 {
+            color: #1e293b;
+            font-size: 19px;
+        }
+
+        .section-header span {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+
+        /* ================= CARDS ================= */
+
+        .cards {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(250px, 1fr)
+                );
+
+            gap: 22px;
+        }
+
+        .card {
+            position: relative;
+
+            background: white;
+
+            padding: 26px;
+
+            min-height: 205px;
+
+            border-radius: 18px;
+
+            text-decoration: none;
+            color: #172033;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 6px 22px
+                rgba(15, 23, 42, 0.06);
+
+            overflow: hidden;
+
+            transition:
+                transform 0.25s,
+                box-shadow 0.25s,
+                border-color 0.25s;
+        }
+
+        .card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 100px;
+            height: 100px;
+
+            right: -35px;
+            bottom: -35px;
+
+            border-radius: 50%;
+
+            background: #eff6ff;
+
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+
+            box-shadow:
+                0 14px 30px
+                rgba(30, 64, 175, 0.12);
+
+            border-color: #bfdbfe;
+        }
+
+        .card:hover::after {
+            transform: scale(1.4);
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eff6ff;
+
+            font-size: 25px;
+
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #1e3a8a;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+
+            max-width: 230px;
+        }
+
+        .arrow {
+            position: absolute;
+
+            right: 22px;
+            top: 27px;
+
+            width: 30px;
+            height: 30px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #f8fafc;
+            color: #2563eb;
+
+            font-size: 17px;
+
+            z-index: 2;
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 45px;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 650px) {
+
+            .header {
+                padding: 15px 5%;
+            }
+
+            .brand h1 {
+                font-size: 21px;
+            }
+
+            .logout-btn {
+                padding: 8px 12px;
+            }
+
+            .welcome-card {
+                padding: 22px;
+            }
+
+            .welcome-text h2 {
+                font-size: 23px;
+            }
+
+            .welcome-icon {
+                display: none;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<div class="header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🏢
+        </div>
+
+        <div>
+
+            <h1>
+                RoomBook
+            </h1>
+
+            <p>
+                Smart Meeting Room Management
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form
+            th:action="@{/logout}"
+            method="post">
+
+        <button
+                type="submit"
+                class="logout-btn">
+
+            ↪ Logout
+
+        </button>
+
+    </form>
+
+</div>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="container">
+
+
+    <!-- WELCOME CARD -->
+
+    <div class="welcome-card">
+
+        <div class="welcome-text">
+
+            <h2>
+                Welcome,
+                <span th:text="${username}">
+                    User
+                </span>
+                👋
+            </h2>
+
+            <p>
+                Manage your meeting spaces and
+                reservations from one place.
+            </p>
+
+
+            <div class="role-badge">
+
+                ●
+
+                <span th:text="${role}">
+                    USER
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="welcome-icon">
+
+            📅
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= ADMIN ================= -->
+
+    <div
+            th:if="${role == 'ADMIN'}">
+
+        <div class="section-header">
+
+            <h3>
+                Admin Management
+            </h3>
+
+            <span>
+                Manage your workspace
+            </span>
+
+        </div>
+
+
+        <div class="cards">
+
+
+            <!-- EMPLOYEES -->
+
+            <a
+                    href="/employees"
+                    class="card">
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="card-icon">
+                    👥
+                </div>
+
+                <h3>
+                    Manage Employees
+                </h3>
+
+                <p>
+                    Add, edit, view and manage
+                    employees in the organization.
+                </p>
+
+            </a>
+
+
+
+            <!-- ROOMS -->
+
+            <a
+                    href="/rooms"
+                    class="card">
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="card-icon">
+                    🏢
+                </div>
+
+                <h3>
+                    Manage Rooms
+                </h3>
+
+                <p>
+                    Manage meeting rooms,
+                    capacity, amenities and status.
+                </p>
+
+            </a>
+
+
+
+            <!-- BOOKINGS -->
+
+            <a
+                    href="/bookings"
+                    class="card">
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="card-icon">
+                    📅
+                </div>
+
+                <h3>
+                    Manage Bookings
+                </h3>
+
+                <p>
+                    View and manage all room
+                    reservations and check-ins.
+                </p>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= CUSTOMER ================= -->
+
+    <div
+            th:if="${role == 'CUSTOMER'}">
+
+        <div class="section-header">
+
+            <h3>
+                Meeting Room Services
+            </h3>
+
+            <span>
+                Plan your meetings easily
+            </span>
+
+        </div>
+
+
+        <div class="cards">
+
+
+            <!-- VIEW ROOMS -->
+
+            <a
+                    href="/rooms"
+                    class="card">
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="card-icon">
+                    🏢
+                </div>
+
+                <h3>
+                    View Rooms
+                </h3>
+
+                <p>
+                    Explore available rooms,
+                    capacity and amenities.
+                </p>
+
+            </a>
+
+
+
+            <!-- BOOK ROOM -->
+
+            <a
+                    href="/add-booking"
+                    class="card">
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="card-icon">
+                    📝
+                </div>
+
+                <h3>
+                    Book a Room
+                </h3>
+
+                <p>
+                    Reserve a suitable meeting
+                    room for your date and time.
+                </p>
+
+            </a>
+
+
+
+            <!-- MY BOOKINGS -->
+
+            <a
+                    href="/bookings"
+                    class="card">
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="card-icon">
+                    📋
+                </div>
+
+                <h3>
+                    My Bookings
+                </h3>
+
+                <p>
+                    View, cancel and check-in
+                    your room reservations.
+                </p>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        RoomBook © 2026 · Smart Meeting Room Booking System
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

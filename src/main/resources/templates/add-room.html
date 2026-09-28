@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RoomBook - Add Room</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 22px 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .header p {
+            margin-top: 6px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .form-card h2 {
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .form-card p {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 7px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>RoomBook</h1>
+    <p>Meeting Room Management</p>
+</div>
+
+<div class="container">
+
+    <div id="message" class="message"></div>
+
+    <div class="form-card">
+
+        <h2 id="pageTitle">
+            Add New Room
+        </h2>
+
+        <p>
+            Enter the meeting room details below.
+        </p>
+
+        <form id="roomForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label for="roomName">
+                        Room Name
+                    </label>
+
+                    <input
+                            type="text"
+                            id="roomName"
+                            placeholder="Conference Room A"
+                            required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="capacity">
+                        Capacity
+                    </label>
+
+                    <input
+                            type="number"
+                            id="capacity"
+                            min="1"
+                            placeholder="10"
+                            required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="amenities">
+                        Amenities
+                    </label>
+
+                    <input
+                            type="text"
+                            id="amenities"
+                            placeholder="Projector, WiFi, AC"
+                            required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="location">
+                        Location
+                    </label>
+
+                    <input
+                            type="text"
+                            id="location"
+                            placeholder="First Floor"
+                            required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select id="status" required>
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="AVAILABLE">
+                            AVAILABLE
+                        </option>
+
+                        <option value="UNAVAILABLE">
+                            UNAVAILABLE
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="buttons">
+
+                <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="submitButton">
+
+                    Add Room
+
+                </button>
+
+                <a
+                        href="/rooms"
+                        class="btn btn-secondary">
+
+                    ← Room List
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    const API_URL = "/api/rooms";
+
+    const form =
+        document.getElementById("roomForm");
+
+    const messageBox =
+        document.getElementById("message");
+
+    const urlParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const roomId =
+        urlParams.get("id");
+
+
+    if (roomId) {
+        loadRoom(roomId);
+    }
+
+
+    async function loadRoom(id) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/${id}`
+                );
+
+            if (!response.ok) {
+                throw new Error("Room not found");
+            }
+
+            const room =
+                await response.json();
+
+            document.getElementById("pageTitle")
+                .textContent =
+                "Edit Room";
+
+            document.getElementById("submitButton")
+                .textContent =
+                "Update Room";
+
+            document.getElementById("roomName")
+                .value =
+                room.roomName;
+
+            document.getElementById("capacity")
+                .value =
+                room.capacity;
+
+            document.getElementById("amenities")
+                .value =
+                room.amenities;
+
+            document.getElementById("location")
+                .value =
+                room.location;
+
+            document.getElementById("status")
+                .value =
+                room.status;
+
+        } catch (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+
+    form.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const room = {
+
+                roomName:
+                    document.getElementById(
+                        "roomName"
+                    ).value,
+
+                capacity:
+                    parseInt(
+                        document.getElementById(
+                            "capacity"
+                        ).value
+                    ),
+
+                amenities:
+                    document.getElementById(
+                        "amenities"
+                    ).value,
+
+                location:
+                    document.getElementById(
+                        "location"
+                    ).value,
+
+                status:
+                    document.getElementById(
+                        "status"
+                    ).value
+
+            };
+
+
+            try {
+
+                let response;
+
+                if (roomId) {
+
+                    response =
+                        await fetch(
+                            `${API_URL}/${roomId}`,
+                            {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify(room)
+                            }
+                        );
+
+                } else {
+
+                    response =
+                        await fetch(
+                            API_URL,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify(room)
+                            }
+                        );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    if (data.messages) {
+
+                        throw new Error(
+                            Object.values(
+                                data.messages
+                            ).join(", ")
+                        );
+
+                    }
+
+                    throw new Error(
+                        data.message ||
+                        "Operation failed"
+                    );
+
+                }
+
+
+                showMessage(
+                    roomId
+                        ? "Room updated successfully"
+                        : "Room added successfully",
+                    "success"
+                );
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "/rooms";
+
+                }, 1000);
+
+
+            } catch (error) {
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+
+            }
+
+        }
+    );
+
+
+    function showMessage(text, type) {
+
+        messageBox.textContent = text;
+
+        messageBox.className =
+            "message " + type;
+
+        messageBox.style.display =
+            "block";
+
+    }
+
+</script>
+
+</body>
+</html>

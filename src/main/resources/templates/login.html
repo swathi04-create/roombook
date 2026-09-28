@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RoomBook - Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f7fb;
+        }
+
+        .login-container {
+            width: 400px;
+            background: white;
+            padding: 40px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #1e3a8a;
+            font-size: 32px;
+        }
+
+        .logo p {
+            color: #6b7280;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 10px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .logout {
+            background: #dcfce7;
+            color: #166534;
+            padding: 10px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .credentials {
+            margin-top: 25px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .credentials p {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="logo">
+        <h1>RoomBook</h1>
+        <p>Meeting Room Booking System</p>
+    </div>
+
+    <!-- Invalid login message -->
+    <div class="error" th:if="${param.error}">
+        Invalid email or password
+    </div>
+
+    <!-- Logout message -->
+    <div class="logout" th:if="${param.logout}">
+        You have been logged out successfully
+    </div>
+
+    <!-- Login Form -->
+    <form action="/login" method="post">
+
+        <div class="form-group">
+
+            <label for="email">Email</label>
+
+            <input
+                    type="email"
+                    id="email"
+                    name="username"
+                    placeholder="Enter your email"
+                    required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="password">Password</label>
+
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required>
+
+        </div>
+
+        <button type="submit" class="login-btn">
+            Login
+        </button>
+
+    </form>
+
+    <!-- Demo Login Details -->
+    <div class="credentials">
+
+        <p>
+            <strong>Admin:</strong>
+            admin@roombook.com / admin123
+        </p>
+
+        <p>
+            <strong>Customer:</strong>
+            customer@roombook.com / customer123
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

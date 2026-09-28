@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:attr="data-role=${role}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>RoomBook - Meeting Rooms</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, #eef4ff, #f8fafc);
+            color: #172033;
+        }
+
+        /* HEADER */
+
+        .header {
+            min-height: 82px;
+            padding: 0 5%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background:
+                linear-gradient(135deg, #172554, #2563eb);
+
+            color: white;
+
+            box-shadow:
+                0 8px 25px rgba(30, 64, 175, 0.2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background: rgba(255,255,255,0.16);
+
+            font-size: 24px;
+        }
+
+        .brand h1 {
+            font-size: 25px;
+        }
+
+        .brand p {
+            font-size: 12px;
+            opacity: 0.75;
+        }
+
+
+        /* CONTAINER */
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+
+        /* TOP BAR */
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 28px;
+        }
+
+        .page-title h2 {
+            color: #172554;
+            font-size: 28px;
+        }
+
+        .page-title p {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            text-decoration: none;
+
+            padding: 11px 17px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition: 0.25s;
+        }
+
+        .primary-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            background: white;
+            color: #475569;
+
+            border: 1px solid #e2e8f0;
+        }
+
+        .back-btn:hover {
+            background: #f8fafc;
+        }
+
+
+        /* ERROR */
+
+        .error {
+            display: none;
+
+            background: #fee2e2;
+            color: #b91c1c;
+
+            padding: 13px 16px;
+
+            border-radius: 9px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* ROOM GRID */
+
+        .room-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(270px, 1fr)
+                );
+
+            gap: 22px;
+        }
+
+
+        /* ROOM CARD */
+
+        .room-card {
+
+            position: relative;
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 24px;
+
+            min-height: 285px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 7px 25px
+                rgba(15, 23, 42, 0.06);
+
+            transition:
+                0.25s;
+
+            overflow: hidden;
+        }
+
+        .room-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 5px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #60a5fa
+                );
+        }
+
+        .room-card:hover {
+
+            transform: translateY(-6px);
+
+            box-shadow:
+                0 15px 35px
+                rgba(30, 64, 175, 0.12);
+
+            border-color: #bfdbfe;
+        }
+
+
+        /* ROOM ICON */
+
+        .room-icon {
+
+            width: 55px;
+            height: 55px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eff6ff;
+
+            font-size: 27px;
+
+            margin-bottom: 17px;
+        }
+
+
+        .room-name {
+
+            font-size: 20px;
+
+            color: #172554;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* DETAILS */
+
+        .detail {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin: 11px 0;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+        .detail-icon {
+
+            width: 27px;
+            height: 27px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #f1f5f9;
+        }
+
+
+        /* STATUS */
+
+        .status {
+
+            display: inline-block;
+
+            margin-top: 7px;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .available {
+
+            background: #dcfce7;
+
+            color: #15803d;
+        }
+
+        .unavailable {
+
+            background: #fee2e2;
+
+            color: #b91c1c;
+        }
+
+
+        /* ADMIN ACTIONS */
+
+        .admin-actions {
+
+            display: flex;
+
+            gap: 8px;
+
+            margin-top: 18px;
+
+            padding-top: 15px;
+
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .edit-btn {
+
+            background: #eff6ff;
+
+            color: #2563eb;
+        }
+
+        .delete-btn {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+        }
+
+        .small-btn {
+
+            border: none;
+
+            padding: 8px 13px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .small-btn:hover {
+
+            transform: translateY(-1px);
+
+            opacity: 0.85;
+        }
+
+
+        /* EMPTY */
+
+        .empty {
+
+            grid-column: 1 / -1;
+
+            background: white;
+
+            padding: 55px 20px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            box-shadow:
+                0 7px 25px
+                rgba(15, 23, 42, 0.05);
+        }
+
+        .empty-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 15px 5%;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🏢
+        </div>
+
+        <div>
+
+            <h1>
+                RoomBook
+            </h1>
+
+            <p>
+                Smart Meeting Room Management
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="container">
+
+
+    <!-- TOP BAR -->
+
+    <div class="top-bar">
+
+        <div class="page-title">
+
+            <h2>
+                Meeting Rooms
+            </h2>
+
+            <p>
+                Find the right space for your next meeting
+            </p>
+
+        </div>
+
+
+        <div class="actions">
+
+            <a
+                    th:if="${role == 'ADMIN'}"
+                    href="/add-room"
+                    class="btn primary-btn">
+
+                + Add Room
+
+            </a>
+
+
+            <a
+                    href="/"
+                    class="btn back-btn">
+
+                ← Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ERROR -->
+
+    <div
+            id="errorMessage"
+            class="error">
+
+        Failed to load rooms.
+
+    </div>
+
+
+
+    <!-- ROOM GRID -->
+
+    <div
+            id="roomGrid"
+            class="room-grid">
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    async function loadRooms() {
+
+        try {
+
+            const response =
+                await fetch("/api/rooms");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load rooms"
+                );
+
+            }
+
+
+            const rooms =
+                await response.json();
+
+
+            const grid =
+                document.getElementById(
+                    "roomGrid"
+                );
+
+
+            grid.innerHTML = "";
+
+
+            if (rooms.length === 0) {
+
+                grid.innerHTML = `
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            🏢
+                        </div>
+
+                        <h3>
+                            No Rooms Available
+                        </h3>
+
+                        <p>
+                            There are currently
+                            no meeting rooms.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            const role =
+                document.documentElement
+                    .getAttribute("data-role");
+
+
+            rooms.forEach(room => {
+
+                const card =
+                    document.createElement("div");
+
+
+                card.className =
+                    "room-card";
+
+
+                const isAvailable =
+                    room.status &&
+                    room.status
+                        .toUpperCase()
+                        === "AVAILABLE";
+
+
+                const statusClass =
+                    isAvailable
+                    ? "available"
+                    : "unavailable";
+
+
+                card.innerHTML = `
+
+                    <div class="room-icon">
+                        🏢
+                    </div>
+
+
+                    <div class="room-name">
+                        ${room.roomName}
+                    </div>
+
+
+                    <div class="detail">
+
+                        <span class="detail-icon">
+                            👥
+                        </span>
+
+                        <span>
+                            Capacity:
+                            <strong>
+                                ${room.capacity}
+                            </strong>
+                        </span>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <span class="detail-icon">
+                            📍
+                        </span>
+
+                        <span>
+                            ${room.location}
+                        </span>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <span class="detail-icon">
+                            🖥️
+                        </span>
+
+                        <span>
+                            ${room.amenities}
+                        </span>
+
+                    </div>
+
+
+                    <span
+                        class="status ${statusClass}">
+
+                        ${room.status}
+
+                    </span>
+
+
+                    <div
+                        class="admin-actions"
+                        style="display: none;">
+
+                    </div>
+
+                `;
+
+
+                const actions =
+                    card.querySelector(
+                        ".admin-actions"
+                    );
+
+
+                if (role === "ADMIN") {
+
+                    actions.style.display =
+                        "flex";
+
+
+                    actions.innerHTML = `
+
+                        <button
+                            class="small-btn edit-btn"
+                            onclick="editRoom(${room.id})">
+
+                            ✏ Edit
+
+                        </button>
+
+
+                        <button
+                            class="small-btn delete-btn"
+                            onclick="deleteRoom(${room.id})">
+
+                            🗑 Delete
+
+                        </button>
+
+                    `;
+
+                }
+
+
+                grid.appendChild(card);
+
+            });
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "errorMessage"
+            ).style.display =
+                "block";
+
+        }
+
+    }
+
+
+
+    function editRoom(id) {
+
+        window.location.href =
+            "/add-room?id=" + id;
+
+    }
+
+
+
+    async function deleteRoom(id) {
+
+        if (
+            !confirm(
+                "Are you sure you want to delete this room?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/rooms/" + id,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const error =
+                    await response.json();
+
+                alert(
+                    error.message ||
+                    "Delete failed"
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Room deleted successfully!"
+            );
+
+
+            loadRooms();
+
+        }
+
+        catch (error) {
+
+            alert(
+                "Failed to delete room."
+            );
+
+        }
+
+    }
+
+
+
+    loadRooms();
+
+</script>
+
+
+</body>
+
+</html>

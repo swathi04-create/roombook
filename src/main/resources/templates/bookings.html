@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:attr="data-role=${role}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>RoomBook - Bookings</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, #eef4ff, #f8fafc);
+            color: #172033;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            min-height: 82px;
+            padding: 0 5%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background:
+                linear-gradient(135deg, #172554, #2563eb);
+
+            color: white;
+
+            box-shadow:
+                0 8px 25px rgba(30, 64, 175, 0.20);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background: rgba(255,255,255,0.16);
+
+            font-size: 24px;
+        }
+
+        .brand h1 {
+            font-size: 25px;
+        }
+
+        .brand p {
+            font-size: 12px;
+            opacity: 0.75;
+        }
+
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: 40px auto;
+        }
+
+
+        /* ================= TOP BAR ================= */
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 25px;
+        }
+
+        .title-area h2 {
+            color: #172554;
+            font-size: 28px;
+        }
+
+        .title-area p {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            text-decoration: none;
+
+            padding: 11px 17px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            background: white;
+            color: #475569;
+
+            border: 1px solid #e2e8f0;
+        }
+
+        .back-btn:hover {
+            background: #f8fafc;
+        }
+
+
+        /* ================= SUMMARY ================= */
+
+        .summary {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 5px 20px
+                rgba(15, 23, 42, 0.05);
+        }
+
+        .summary-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .summary-icon {
+            width: 43px;
+            height: 43px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eff6ff;
+
+            font-size: 21px;
+        }
+
+        .summary-card h3 {
+            margin-top: 14px;
+
+            font-size: 25px;
+
+            color: #172554;
+        }
+
+        .summary-card p {
+            color: #64748b;
+
+            font-size: 12px;
+
+            margin-top: 3px;
+        }
+
+
+        /* ================= ERROR ================= */
+
+        .error {
+            display: none;
+
+            background: #fee2e2;
+
+            color: #b91c1c;
+
+            padding: 13px 16px;
+
+            border-radius: 9px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* ================= TABLE CARD ================= */
+
+        .table-card {
+            background: white;
+
+            border-radius: 18px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 7px 25px
+                rgba(15, 23, 42, 0.06);
+
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 22px 25px;
+
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .table-header h3 {
+            color: #172554;
+            font-size: 18px;
+        }
+
+        .table-header p {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+
+            min-width: 1050px;
+        }
+
+        th {
+            background: #f8fafc;
+
+            color: #475569;
+
+            padding: 14px 16px;
+
+            text-align: left;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px 16px;
+
+            border-bottom: 1px solid #f1f5f9;
+
+            color: #475569;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: #f8fbff;
+        }
+
+
+        /* ================= ID ================= */
+
+        .booking-id {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 34px;
+            height: 28px;
+
+            border-radius: 8px;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        /* ================= ROOM ================= */
+
+        .room-name {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #334155;
+        }
+
+
+        /* ================= STATUS ================= */
+
+        .status {
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .confirmed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .released {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+
+        /* ================= CHECK IN ================= */
+
+        .check-status {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .checked {
+            color: #2563eb;
+        }
+
+        .not-checked {
+            color: #94a3b8;
+        }
+
+
+        /* ================= ACTIONS ================= */
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .small-btn {
+            border: none;
+
+            padding: 7px 10px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .small-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.85;
+        }
+
+        .checkin-btn {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .cancel-btn {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            text-align: center;
+
+            padding: 55px 20px;
+
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+
+            margin-bottom: 12px;
+        }
+
+        .empty h3 {
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 800px) {
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<div class="header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🏢
+        </div>
+
+        <div>
+
+            <h1>
+                RoomBook
+            </h1>
+
+            <p>
+                Smart Meeting Room Management
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="container">
+
+
+    <!-- ================= TOP BAR ================= -->
+
+    <div class="top-bar">
+
+        <div class="title-area">
+
+            <h2 id="pageTitle">
+                Bookings
+            </h2>
+
+            <p>
+                Manage your meeting room reservations
+            </p>
+
+        </div>
+
+
+        <div class="actions">
+
+            <a
+                    href="/add-booking"
+                    class="btn primary-btn">
+
+                + New Booking
+
+            </a>
+
+
+            <a
+                    href="/"
+                    class="btn back-btn">
+
+                ← Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <div class="summary">
+
+
+        <div class="summary-card">
+
+            <div class="summary-top">
+
+                <span>
+                    Total
+                </span>
+
+                <div class="summary-icon">
+                    📋
+                </div>
+
+            </div>
+
+            <h3 id="totalCount">
+                0
+            </h3>
+
+            <p>
+                Total bookings
+            </p>
+
+        </div>
+
+
+
+        <div class="summary-card">
+
+            <div class="summary-top">
+
+                <span>
+                    Confirmed
+                </span>
+
+                <div class="summary-icon">
+                    ✅
+                </div>
+
+            </div>
+
+            <h3 id="confirmedCount">
+                0
+            </h3>
+
+            <p>
+                Active reservations
+            </p>
+
+        </div>
+
+
+
+        <div class="summary-card">
+
+            <div class="summary-top">
+
+                <span>
+                    Checked In
+                </span>
+
+                <div class="summary-icon">
+                    🟢
+                </div>
+
+            </div>
+
+            <h3 id="checkedInCount">
+                0
+            </h3>
+
+            <p>
+                Meetings checked in
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= ERROR ================= -->
+
+    <div
+            id="errorMessage"
+            class="error">
+
+        Failed to load bookings.
+
+    </div>
+
+
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h3 id="tableTitle">
+                Booking List
+            </h3>
+
+            <p>
+                View reservation details and manage bookings
+            </p>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Room</th>
+
+                    <th>Employee</th>
+
+                    <th>Date</th>
+
+                    <th>Time</th>
+
+                    <th>Purpose</th>
+
+                    <th>Status</th>
+
+                    <th>Check-in</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="bookingTableBody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    const role =
+        document.documentElement
+            .getAttribute("data-role");
+
+
+    /* ================= TITLE ================= */
+
+    if (role === "CUSTOMER") {
+
+        document.getElementById(
+            "pageTitle"
+        ).innerText =
+            "My Bookings";
+
+        document.getElementById(
+            "tableTitle"
+        ).innerText =
+            "My Booking List";
+
+    }
+
+    else {
+
+        document.getElementById(
+            "pageTitle"
+        ).innerText =
+            "All Bookings";
+
+        document.getElementById(
+            "tableTitle"
+        ).innerText =
+            "All Booking List";
+
+    }
+
+
+
+    /* ================= LOAD ================= */
+
+    async function loadBookings() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/bookings"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load bookings"
+                );
+
+            }
+
+
+            const bookings =
+                await response.json();
+
+
+            const tableBody =
+                document.getElementById(
+                    "bookingTableBody"
+                );
+
+
+            tableBody.innerHTML = "";
+
+
+            /* SUMMARY */
+
+            const total =
+                bookings.length;
+
+
+            const confirmed =
+                bookings.filter(
+                    booking =>
+                        booking.status ===
+                        "CONFIRMED"
+                ).length;
+
+
+            const checkedIn =
+                bookings.filter(
+                    booking =>
+                        booking.checkedIn
+                ).length;
+
+
+            document.getElementById(
+                "totalCount"
+            ).innerText = total;
+
+
+            document.getElementById(
+                "confirmedCount"
+            ).innerText = confirmed;
+
+
+            document.getElementById(
+                "checkedInCount"
+            ).innerText = checkedIn;
+
+
+
+            /* EMPTY */
+
+            if (bookings.length === 0) {
+
+                tableBody.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="9">
+
+                            <div class="empty">
+
+                                <div class="empty-icon">
+                                    📅
+                                </div>
+
+                                <h3>
+                                    ${
+                                        role === "CUSTOMER"
+                                        ? "No bookings yet"
+                                        : "No bookings available"
+                                    }
+                                </h3>
+
+                                <p>
+                                    ${
+                                        role === "CUSTOMER"
+                                        ? "Create your first meeting room booking."
+                                        : "Bookings will appear here."
+                                    }
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+            }
+
+
+
+            /* ROWS */
+
+            bookings.forEach(
+                booking => {
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    let statusClass = "";
+
+
+                    if (
+                        booking.status ===
+                        "CONFIRMED"
+                    ) {
+
+                        statusClass =
+                            "confirmed";
+
+                    }
+
+                    else if (
+                        booking.status ===
+                        "CANCELLED"
+                    ) {
+
+                        statusClass =
+                            "cancelled";
+
+                    }
+
+                    else if (
+                        booking.status ===
+                        "RELEASED"
+                    ) {
+
+                        statusClass =
+                            "released";
+
+                    }
+
+
+
+                    const checkText =
+                        booking.checkedIn
+                        ? "✓ Checked In"
+                        : "Not Checked In";
+
+
+                    const checkClass =
+                        booking.checkedIn
+                        ? "checked"
+                        : "not-checked";
+
+
+
+                    row.innerHTML = `
+
+                        <td>
+
+                            <span
+                                class="booking-id">
+
+                                #${booking.id}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="room-name">
+
+                                ${
+                                    booking.room
+                                    ? booking.room.roomName
+                                    : "-"
+                                }
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="employee-name">
+
+                                ${
+                                    booking.employee
+                                    ? booking.employee.name
+                                    : "-"
+                                }
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            ${booking.bookingDate}
+                        </td>
+
+
+                        <td>
+
+                            ${booking.startTime}
+                            -
+                            ${booking.endTime}
+
+                        </td>
+
+
+                        <td>
+
+                            ${
+                                booking.purpose
+                                || "-"
+                            }
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="status ${statusClass}">
+
+                                ${booking.status}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="check-status ${checkClass}">
+
+                                ${checkText}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div
+                                class="action-buttons"
+                                id="actions-${booking.id}">
+
+                            </div>
+
+                        </td>
+
+                    `;
+
+
+
+                    const actions =
+                        document.getElementById(
+                            "actions-" +
+                            booking.id
+                        );
+
+
+
+                    /* CHECK-IN */
+
+                    if (
+                        booking.status ===
+                        "CONFIRMED"
+                        &&
+                        !booking.checkedIn
+                    ) {
+
+                        actions.innerHTML += `
+
+                            <button
+                                class="small-btn checkin-btn"
+                                onclick="checkInBooking(${booking.id})">
+
+                                ✓ Check-in
+
+                            </button>
+
+                        `;
+
+                    }
+
+
+
+                    /* CANCEL */
+
+                    if (
+                        booking.status ===
+                        "CONFIRMED"
+                    ) {
+
+                        actions.innerHTML += `
+
+                            <button
+                                class="small-btn cancel-btn"
+                                onclick="cancelBooking(${booking.id})">
+
+                                Cancel
+
+                            </button>
+
+                        `;
+
+                    }
+
+
+
+                    /* DELETE - ADMIN ONLY */
+
+                    if (
+                        role === "ADMIN"
+                    ) {
+
+                        actions.innerHTML += `
+
+                            <button
+                                class="small-btn delete-btn"
+                                onclick="deleteBooking(${booking.id})">
+
+                                Delete
+
+                            </button>
+
+                        `;
+
+                    }
+
+
+                    tableBody.appendChild(row);
+
+                }
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "errorMessage"
+            ).style.display =
+                "block";
+
+        }
+
+    }
+
+
+
+    /* ================= CHECK IN ================= */
+
+    async function checkInBooking(id) {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/bookings/" +
+                    id +
+                    "/check-in",
+                    {
+                        method: "PUT"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const error =
+                    await response.json();
+
+                alert(
+                    error.message ||
+                    "Check-in failed."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Booking checked in successfully!"
+            );
+
+
+            loadBookings();
+
+        }
+
+        catch (error) {
+
+            alert(
+                "Failed to check-in booking."
+            );
+
+        }
+
+    }
+
+
+
+    /* ================= CANCEL ================= */
+
+    async function cancelBooking(id) {
+
+        if (
+            !confirm(
+                "Are you sure you want to cancel this booking?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/bookings/" +
+                    id +
+                    "/cancel",
+                    {
+                        method: "PUT"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const error =
+                    await response.json();
+
+                alert(
+                    error.message ||
+                    "Cancellation failed."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Booking cancelled successfully!"
+            );
+
+
+            loadBookings();
+
+        }
+
+        catch (error) {
+
+            alert(
+                "Failed to cancel booking."
+            );
+
+        }
+
+    }
+
+
+
+    /* ================= DELETE ================= */
+
+    async function deleteBooking(id) {
+
+        if (
+            !confirm(
+                "Are you sure you want to permanently delete this booking?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/bookings/" +
+                    id,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const error =
+                    await response.json();
+
+                alert(
+                    error.message ||
+                    "Delete failed."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Booking deleted successfully!"
+            );
+
+
+            loadBookings();
+
+        }
+
+        catch (error) {
+
+            alert(
+                "Failed to delete booking."
+            );
+
+        }
+
+    }
+
+
+
+    /* ================= START ================= */
+
+    loadBookings();
+
+</script>
+
+
+</body>
+
+</html>
