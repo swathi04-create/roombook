@@ -23,8 +23,7 @@
 
         body {
             min-height: 100vh;
-            background:
-                linear-gradient(135deg, #eef4ff, #f8fafc);
+            background: linear-gradient(135deg, #eef4ff, #f8fafc);
             color: #172033;
         }
 
@@ -38,8 +37,7 @@
             align-items: center;
             justify-content: space-between;
 
-            background:
-                linear-gradient(135deg, #172554, #2563eb);
+            background: linear-gradient(135deg, #172554, #2563eb);
 
             color: white;
 
@@ -77,7 +75,6 @@
             opacity: 0.75;
         }
 
-
         /* ================= CONTAINER ================= */
 
         .container {
@@ -85,7 +82,6 @@
             max-width: 1250px;
             margin: 40px auto;
         }
-
 
         /* ================= TOP BAR ================= */
 
@@ -149,7 +145,6 @@
         .back-btn:hover {
             background: #f8fafc;
         }
-
 
         /* ================= SUMMARY ================= */
 
@@ -215,7 +210,6 @@
             margin-top: 3px;
         }
 
-
         /* ================= ERROR ================= */
 
         .error {
@@ -231,7 +225,6 @@
 
             margin-bottom: 20px;
         }
-
 
         /* ================= TABLE CARD ================= */
 
@@ -312,7 +305,6 @@
             background: #f8fbff;
         }
 
-
         /* ================= ID ================= */
 
         .booking-id {
@@ -335,7 +327,6 @@
             font-weight: 700;
         }
 
-
         /* ================= ROOM ================= */
 
         .room-name {
@@ -347,7 +338,6 @@
             font-weight: 600;
             color: #334155;
         }
-
 
         /* ================= STATUS ================= */
 
@@ -380,7 +370,6 @@
             color: #c2410c;
         }
 
-
         /* ================= CHECK IN ================= */
 
         .check-status {
@@ -395,7 +384,6 @@
         .not-checked {
             color: #94a3b8;
         }
-
 
         /* ================= ACTIONS ================= */
 
@@ -441,7 +429,6 @@
             color: #dc2626;
         }
 
-
         /* ================= EMPTY ================= */
 
         .empty {
@@ -462,7 +449,6 @@
             color: #334155;
             margin-bottom: 5px;
         }
-
 
         /* ================= MOBILE ================= */
 
@@ -486,7 +472,6 @@
             .summary {
                 grid-template-columns: 1fr;
             }
-
         }
 
     </style>
@@ -522,7 +507,6 @@
     </div>
 
 </div>
-
 
 
 <div class="container">
@@ -569,7 +553,6 @@
     </div>
 
 
-
     <!-- ================= SUMMARY ================= -->
 
     <div class="summary">
@@ -600,7 +583,6 @@
         </div>
 
 
-
         <div class="summary-card">
 
             <div class="summary-top">
@@ -624,7 +606,6 @@
             </p>
 
         </div>
-
 
 
         <div class="summary-card">
@@ -654,7 +635,6 @@
     </div>
 
 
-
     <!-- ================= ERROR ================= -->
 
     <div
@@ -664,7 +644,6 @@
         Failed to load bookings.
 
     </div>
-
 
 
     <!-- ================= TABLE ================= -->
@@ -730,9 +709,7 @@
 </div>
 
 
-
 <script>
-
 
     const role =
         document.documentElement
@@ -770,7 +747,6 @@
     }
 
 
-
     /* ================= LOAD ================= */
 
     async function loadBookings() {
@@ -778,9 +754,7 @@
         try {
 
             const response =
-                await fetch(
-                    "/api/bookings"
-                );
+                await fetch("/api/bookings");
 
 
             if (!response.ok) {
@@ -841,6 +815,12 @@
             ).innerText = checkedIn;
 
 
+            /* HIDE ERROR */
+
+            document.getElementById(
+                "errorMessage"
+            ).style.display = "none";
+
 
             /* EMPTY */
 
@@ -884,7 +864,6 @@
 
                 return;
             }
-
 
 
             /* ROWS */
@@ -932,7 +911,6 @@
                     }
 
 
-
                     const checkText =
                         booking.checkedIn
                         ? "✓ Checked In"
@@ -943,7 +921,6 @@
                         booking.checkedIn
                         ? "checked"
                         : "not-checked";
-
 
 
                     row.innerHTML = `
@@ -1043,8 +1020,7 @@
                         <td>
 
                             <div
-                                class="action-buttons"
-                                id="actions-${booking.id}">
+                                class="action-buttons">
 
                             </div>
 
@@ -1053,13 +1029,18 @@
                     `;
 
 
+                    /*
+                     * IMPORTANT FIX
+                     *
+                     * Instead of document.getElementById()
+                     * we directly find the actions div
+                     * inside the current row.
+                     */
 
                     const actions =
-                        document.getElementById(
-                            "actions-" +
-                            booking.id
+                        row.querySelector(
+                            ".action-buttons"
                         );
-
 
 
                     /* CHECK-IN */
@@ -1086,7 +1067,6 @@
                     }
 
 
-
                     /* CANCEL */
 
                     if (
@@ -1107,7 +1087,6 @@
                         `;
 
                     }
-
 
 
                     /* DELETE - ADMIN ONLY */
@@ -1131,6 +1110,12 @@
                     }
 
 
+                    /*
+                     * IMPORTANT:
+                     * Append row only after all
+                     * row content and actions are ready.
+                     */
+
                     tableBody.appendChild(row);
 
                 }
@@ -1140,7 +1125,10 @@
 
         catch (error) {
 
-            console.error(error);
+            console.error(
+                "Booking loading error:",
+                error
+            );
 
             document.getElementById(
                 "errorMessage"
@@ -1150,7 +1138,6 @@
         }
 
     }
-
 
 
     /* ================= CHECK IN ================= */
@@ -1203,7 +1190,6 @@
         }
 
     }
-
 
 
     /* ================= CANCEL ================= */
@@ -1269,7 +1255,6 @@
     }
 
 
-
     /* ================= DELETE ================= */
 
     async function deleteBooking(id) {
@@ -1330,7 +1315,6 @@
         }
 
     }
-
 
 
     /* ================= START ================= */
